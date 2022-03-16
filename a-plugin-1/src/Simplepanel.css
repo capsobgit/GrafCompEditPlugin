@@ -1,0 +1,11 @@
+.circle {
+  fill: blue;
+}
+
+.circle:hover {
+  fill: green;
+}
+
+svg {
+  justify-content: center;
+}
