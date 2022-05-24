@@ -4,7 +4,6 @@ import { SimpleOptions } from 'types';
 import { css } from 'emotion';
 import { stylesFactory, useTheme } from '@grafana/ui';
 import AP_Nodes from 'components/AP_Nodes';
-import { DragMove } from 'components/DragMove';
 
 interface Props extends PanelProps<SimpleOptions> {}
 
