@@ -13,7 +13,7 @@ import ReactFlow, {
   MiniMap,
   Controls,
   useReactFlow,
-  useViewport,
+  //useViewport,
 } from 'react-flow-renderer';
 import CustomNode from '../components/CustomNode';
 import '../styles/index.css';
@@ -46,10 +46,9 @@ interface DimProp {
 }
 
 const App = (props: DimProp) => {
+  //Panel width und height dimension from parent
   const { widthProp, heightProp } = props;
-  //Panel width und height übernehmen
   const { fitBounds } = useReactFlow();
-  //Panel wird mit props für width,height gesetzt
   const flowKey = 'flow_01';
 
   const getNodeId = () => `randomnode_${+new Date()}`;
@@ -60,7 +59,7 @@ const App = (props: DimProp) => {
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const { setViewport } = useReactFlow();
   const [rfInstance, setRfInstance] = useState(null);
-  //Props für Edgeoptions
+  //This Variable holds the animate property of the edges
   const [animate, setAnimate] = useState(false);
 
   const handleNewConnection = () => {
@@ -78,7 +77,6 @@ const App = (props: DimProp) => {
   );
   const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), [setEdges]);
 
-  //const { x, y, zoom } = useViewport();
   console.log('widthProp, HeightProp: ', widthProp, heightProp);
   useEffect(() => {
     return () => {
@@ -90,11 +88,12 @@ const App = (props: DimProp) => {
     if (rfInstance) {
       const flow = rfInstance.toObject();
       localStorage.setItem(flowKey, JSON.stringify(flow));
-      //Hier Datenbank call
+      //HTTP-Request to database
       axios.put(`http://localhost:3002/api/put/${flowKey}`, flow);
     }
   }, [rfInstance]);
-
+  //This procedure remove backslashes which was generated from mysql output
+  //and format data to json object
   const formatDataFromDatabaseToObject = (unformattedData) => {
     let stringData = JSON.stringify(unformattedData);
     const strWithoutBS = stringData.replace(/\\/g, '');
@@ -105,8 +104,8 @@ const App = (props: DimProp) => {
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
-      const flowLocalFor = JSON.parse(localStorage.getItem(flowKey));
-      console.log(flowLocalFor);
+      //Save alternatively on Localstorage of Browser
+      /* const flowLocalFor = JSON.parse(localStorage.getItem(flowKey)); */
       //HTTP requests to express server
       const flowViewport = await axios.get(`http://localhost:3002/api/get/viewport`);
       const viewportData = flowViewport.data;
